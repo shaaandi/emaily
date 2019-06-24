@@ -20,7 +20,8 @@ passport.use(new GoogleStrategy(
     {
         clientID : keys.googleClientID,
         clientSecret : keys.googleClientSecret,
-        callbackURL : '/auth/google/return'
+        callbackURL : '/auth/google/return',
+        proxy : true
     }, (accessToken, refreshToken, profile, done )=> {
         
         if (mongoose.connection.readyState == 0)
