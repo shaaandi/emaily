@@ -22,28 +22,13 @@ passport.use(new GoogleStrategy(
         clientSecret : keys.googleClientSecret,
         callbackURL : '/auth/google/return',
         proxy : true
-    }, (accessToken, refreshToken, profile, done )=> {
+    }, async (accessToken, refreshToken, profile, done )=> {
         
-        if (mongoose.connection.readyState == 0)
-            console.log('DB not connected');
-
-        User.findOne({googleID : profile.id})
-        .then((existingUser) => {
-            console.log('test')
-            if(existingUser){
-                console.log(existingUser)
-                done(null,existingUser);
-            }
-            else {
-                new User({googleID : profile.id}).save()
-                .then(newUser => {
-                    done(null, newUser);
-                })
-            }
-        })
-        .catch((err) => {
-            console.log(err)
-        })
+        if (mongoose.connection.readyState == 0) console.log('DB not connected');
+        let existingUser = await User.findOne({googleID : profile.id})
+        if (existingUser) return done(null, existingUser)
+        let newUser = await new User({googleID: profile.id}).save()
+        done(null, newUser)
         
        
     }
