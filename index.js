@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const bodyParser = require('body-parser');
+
 require('./models/users');
+require('./models/survey');
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI, () => { }, { useNewUrlParser: true })
@@ -30,10 +32,11 @@ app.use(passport.session());
 
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 // configuration for production built
 if (process.env.NODE_ENV === 'production'){
-
+    // the relative addressing in our client application matches with this 
     app.use(express.static('client/build'));
 
     const path = require('path');
